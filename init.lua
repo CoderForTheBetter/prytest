@@ -5,8 +5,8 @@ local Axis = {
   collisionbox = {-1.5, 0, -1.5, 1.5, 1.5, 1.5},
   visual = "mesh",
   visual_size = {x=12, y=12,},
-  mesh = "Helicopter.x",
-  textures = {"Helicopter.png"}, -- number of required textures depends on visual
+  mesh = "axis.x",
+  textures = {"axis.png"}, -- number of required textures depends on visual
   colors = {}, -- number of required colors depends on visual
   spritediv = {x=1, y=1},
   initial_sprite_basepos = {x=0, y=0},
