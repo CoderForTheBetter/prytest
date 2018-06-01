@@ -13,44 +13,73 @@ local Axis = {
   is_visible = true,
   makes_footstep_sound = false,
   automatic_rotate = false,
-  p = 0,
-  r = 0,
-  y = 0,
+  c = 0,
 }
+
+function Axis:on_activate(_, staticdata)
+  minetest.chat_send_all("Now use one of these commands:  /mode 45,  /mode spinX,  /mode spinY,  /mode spinZ,  /rotation x y z,  /help")
+end
+
+
+mode = ""
+
+rotX = 0
+rotY = 0
+rotZ = 0
 
 
 function Axis:on_step(_, dtime)  
-  if self.p < 2.25 then
-    self.p=self.p+0.01
-    self.object:set_pitch(self.p)
+  
+  self.c = self.c + 1
+  
+  if mode == "45" then
+    if self.c >= 50 and self.c <= 100 then
+      rotX = 45
+      rotY = 0
+      rotZ = 0
+    elseif self.c >= 100 and self.c <= 150 then
+      rotX = 0
+      rotY = 45
+      rotZ = 0
+    elseif self.c >= 150 and self.c <= 200 then
+      rotX = 0
+      rotY = 0
+      rotZ = 45
+    elseif self.c >= 200 then
+      self.c = 0
+      rotX = 0
+      rotY = 0
+      rotZ = 0
+    end
+    self.object:set_rotation({x=rotX, y=rotY, z=rotZ})
+  elseif mode == "spinX" then
+    self.object:set_rotation({x=self.c, y=0, z=0})
     
-  elseif self.r < 2.25 then
-    self.r=self.r+0.01
-    self.object:set_roll(self.r)
+  elseif mode == "spinY" then
+    self.object:set_rotation({x=0, y=self.c, z=0})
     
-  elseif self.y < 2.25 then
-    self.y=self.y+0.01
-    self.object:set_yaw(self.y)
+  elseif mode == "spinZ" then
+    self.object:set_rotation({x=0, y=0, z=self.c})
     
-  else
-    self.p = 0
-    self.r = 0
-    self.y = 0
-    self.object:set_roll(self.r)
-    self.object:set_pitch(self.p)
-    self.object:set_yaw(self.y)
+  elseif mode == "rotate" then
+    self.object:set_rotation({x=rotX, y=rotY, z=rotZ})
     
   end
-  minetest.chat_send_all("Pitch: " .. tostring(self.p))
-  minetest.chat_send_all("Roll: " .. tostring(self.r))
-  minetest.chat_send_all("YAW: " .. tostring(self.y))
   minetest.chat_send_all(" ")
+  minetest.chat_send_all(" ")
+  minetest.chat_send_all(" ")
+  minetest.chat_send_all(" ")
+  minetest.chat_send_all(" ")
+  minetest.chat_send_all( "Rot X: " .. tostring(self.object:get_rotation().x) .. "   " ..
+                          "Rot Y: " .. tostring(self.object:get_rotation().y) .. "   " ..
+                          "Rot Z: " .. tostring(self.object:get_rotation().z) .. "       " ..
+                          "Commands:  /spawn axis,  /mode 45,  /mode spinX,  /mode spinY,  /mode spinZ,  /rotation x y z,  /help")
 end
 
 
 
 
-minetest.register_entity("prytest:axis", Axis)
+minetest.register_entity("rottest:axis", Axis)
 
 
 minetest.register_chatcommand("spawn", {
@@ -59,7 +88,48 @@ minetest.register_chatcommand("spawn", {
 	func = function(name , text)
     if text == "axis" then
       minetest.get_player_by_name(name);
-      local obj = minetest.add_entity(minetest.get_player_by_name(name):get_pos(), "prytest:axis")
+      local obj = minetest.add_entity(minetest.get_player_by_name(name):get_pos(), "rottest:axis")
     end
 	end,
 })
+
+minetest.register_chatcommand("mode", {
+	params = "<text>",
+	description = "",
+	func = function(name , text)
+    mode = text
+	end,
+})
+
+
+minetest.register_chatcommand("rotation", {
+	params = "<x> <y> <z>",
+	description = "Apply rotation to axis entity",
+  privs = {privs=true},
+	func = function(name, param)
+    axes = {}
+    for axis in param:gmatch("%w+") do 
+      table.insert(axes, axis) 
+    end
+    if axes[1] == nil or axes[2] == nil or axes[3] == nil then
+      minetest.chat_send_player(name, "The form of the command is: /rotation <x> <y> <z>")
+    else
+      rotX = tonumber(axes[1])
+      rotY = tonumber(axes[2])
+      rotZ = tonumber(axes[3])
+      mode = "rotate"
+    end
+	end
+})
+
+minetest.register_chatcommand("help", {
+	params = "<text>",
+	description = "",
+	func = function(name , text)
+    minetest.chat_send_all("Commands:  /spawn axis,  /mode 45,  /mode spinX,  /mode spinY,  /mode spinZ,  /rotation x y z,  /help")
+	end,
+})
+
+minetest.register_on_joinplayer(function(player)
+	minetest.chat_send_all("Commands:  /spawn axis,  /mode 45,  /mode spinX,  /mode spinY,  /mode spinZ,  /rotation x y z,  /help")
+end)
