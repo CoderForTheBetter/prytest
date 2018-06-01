@@ -79,7 +79,7 @@ end
 
 
 
-minetest.register_entity("rottest:axis", Axis)
+minetest.register_entity("prytest:axis", Axis)
 
 
 minetest.register_chatcommand("spawn", {
@@ -88,7 +88,7 @@ minetest.register_chatcommand("spawn", {
 	func = function(name , text)
     if text == "axis" then
       minetest.get_player_by_name(name);
-      local obj = minetest.add_entity(minetest.get_player_by_name(name):get_pos(), "rottest:axis")
+      local obj = minetest.add_entity(minetest.get_player_by_name(name):get_pos(), "prytest:axis")
     end
 	end,
 })
