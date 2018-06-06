@@ -16,6 +16,7 @@ local Axis = {
   c = 0,
 }
 
+
 function Axis:on_activate(_, staticdata)
   minetest.chat_send_all("Now use one of these commands:  /mode 45,  /mode spinX,  /mode spinY,  /mode spinZ,  /rotation x y z,  /help")
 end
@@ -73,13 +74,47 @@ function Axis:on_step(_, dtime)
   minetest.chat_send_all( "Rot X: " .. tostring(self.object:get_rotation().x) .. "   " ..
                           "Rot Y: " .. tostring(self.object:get_rotation().y) .. "   " ..
                           "Rot Z: " .. tostring(self.object:get_rotation().z) .. "       " ..
-                          "Commands:  /spawn axis,  /mode 45,  /mode spinX,  /mode spinY,  /mode spinZ,  /rotation x y z,  /help")
+                          "Commands:  /spawn axis,  /spawn box  /mode 45,  /mode spinX,  /mode spinY,  /mode spinZ,  /rotation x y z,  /help,  /attach ab,  /attach ba")
+end
+
+
+local Box = {
+  hp_max = 1,
+  physical = true,
+  weight = 50,
+  collisionbox = {-1.5, 0, -1.5, 1.5, 1.5, 1.5},
+  visual = "mesh",
+  visual_size = {x=12, y=12,},
+  mesh = "box.x",
+  textures = {"unwrap_helper.jpg"}, -- number of required textures depends on visual
+  colors = {}, -- number of required colors depends on visual
+  spritediv = {x=1, y=1},
+  initial_sprite_basepos = {x=0, y=0},
+  is_visible = true,
+  makes_footstep_sound = false,
+  automatic_rotate = false,
+  s = 0,
+}
+
+
+function Box:on_step(_, dtime) 
+  self.s = self.s + 1
+  self.object:set_rotation({x=0, y=self.s, z=0})
 end
 
 
 
 
+
+
+
+
 minetest.register_entity("prytest:axis", Axis)
+minetest.register_entity("prytest:box", Box)
+
+
+local lastAxis = nil
+local lastBox = nil
 
 
 minetest.register_chatcommand("spawn", {
@@ -87,11 +122,30 @@ minetest.register_chatcommand("spawn", {
 	description = "",
 	func = function(name , text)
     if text == "axis" then
-      minetest.get_player_by_name(name);
-      local obj = minetest.add_entity(minetest.get_player_by_name(name):get_pos(), "prytest:axis")
+      lastAxis = minetest.add_entity(minetest.get_player_by_name(name):get_pos(), "prytest:axis")
+    elseif text == "box" then
+      lastBox = minetest.add_entity(minetest.get_player_by_name(name):get_pos(), "prytest:box")
     end
 	end,
 })
+
+
+minetest.register_chatcommand("attach", {
+	params = "<text>",
+	description = "",
+	func = function(name , text)
+    if text == "ab" then
+      lastBox:set_attach(lastAxis, "", {x=0,y=0,z=0}, {x=0,y=0,z=0})
+      lastBox:set_properties({visual_size = {x=0.6, y=0.6}})
+    elseif text == "ba" then
+      lastAxis:set_attach(lastBox, "", {x=0,y=0,z=0}, {x=0,y=0,z=0})
+      lastAxis:set_properties({visual_size = {x=0.6, y=0.6}})
+    end
+	end,
+})
+
+
+
 
 minetest.register_chatcommand("mode", {
 	params = "<text>",
