@@ -18,7 +18,7 @@ local Axis = {
 
 
 function Axis:on_activate(_, staticdata)
-  minetest.chat_send_all("Now use one of these commands:  /mode 45,  /mode spinX,  /mode spinY,  /mode spinZ,  /rotation x y z,  /help")
+  minetest.chat_send_all("Commands:  /spawn axis,  /spawn box  /mode 45,  /mode spinX,  /mode spinY,  /mode spinZ,  /rotation <x> <y> <z> (- do not work),  /setRotX <x>,  /setRotY <y>,  /setRotZ [z]  /help,  /attach ab,  /attach ba")
 end
 
 
@@ -31,7 +31,7 @@ rotZ = 0
 
 function Axis:on_step(_, dtime)  
   
-  self.c = self.c + 1
+  self.c = self.c - 1
   
   if mode == "45" then
     if self.c >= 50 and self.c <= 100 then
@@ -74,7 +74,7 @@ function Axis:on_step(_, dtime)
   minetest.chat_send_all( "Rot X: " .. tostring(self.object:get_rotation().x) .. "   " ..
                           "Rot Y: " .. tostring(self.object:get_rotation().y) .. "   " ..
                           "Rot Z: " .. tostring(self.object:get_rotation().z) .. "       " ..
-                          "Commands:  /spawn axis,  /spawn box  /mode 45,  /mode spinX,  /mode spinY,  /mode spinZ,  /rotation x y z,  /help,  /attach ab,  /attach ba")
+                          "Commands:  /spawn axis,  /spawn box  /mode 45,  /mode spinX,  /mode spinY,  /mode spinZ,  /rotation <x> <y> <z> (- do not work),  /setRotX <x>,  /setRotY <y>,  /setRotZ [z]  /help,  /attach ab,  /attach ba")
 end
 
 
@@ -101,10 +101,6 @@ function Box:on_step(_, dtime)
   self.s = self.s + 1
   self.object:set_rotation({x=0, y=self.s, z=0})
 end
-
-
-
-
 
 
 
@@ -146,7 +142,7 @@ minetest.register_chatcommand("attach", {
 
 
 
-
+-- can set to various modes
 minetest.register_chatcommand("mode", {
 	params = "<text>",
 	description = "",
@@ -156,6 +152,7 @@ minetest.register_chatcommand("mode", {
 })
 
 
+-- This one does not work with negative numbers due to Lua patterns
 minetest.register_chatcommand("rotation", {
 	params = "<x> <y> <z>",
 	description = "Apply rotation to axis entity",
@@ -176,14 +173,46 @@ minetest.register_chatcommand("rotation", {
 	end
 })
 
+
+minetest.register_chatcommand("setRotX", {
+	params = "<x>",
+	description = "Apply rotation x",
+  privs = {privs=true},
+	func = function(name, param)
+    rotX = tonumber(param)
+    mode = "rotate"
+	end
+})
+
+minetest.register_chatcommand("setRotY", {
+	params = "<y>",
+	description = "Apply rotation y",
+  privs = {privs=true},
+	func = function(name, param)
+    rotY = tonumber(param)
+    mode = "rotate"
+	end
+})
+
+minetest.register_chatcommand("setRotZ", {
+	params = "<z>",
+	description = "Apply rotation z",
+  privs = {privs=true},
+	func = function(name, param)
+    rotZ = tonumber(param)
+    mode = "rotate"
+	end
+})
+
+
 minetest.register_chatcommand("help", {
 	params = "<text>",
 	description = "",
 	func = function(name , text)
-    minetest.chat_send_all("Commands:  /spawn axis,  /mode 45,  /mode spinX,  /mode spinY,  /mode spinZ,  /rotation x y z,  /help")
+    minetest.chat_send_all("Commands:  /spawn axis,  /spawn box  /mode 45,  /mode spinX,  /mode spinY,  /mode spinZ,  /rotation <x> <y> <z> (- do not work),  /setRotX <x>,  /setRotY <y>,  /setRotZ [z]  /help,  /attach ab,  /attach ba")
 	end,
 })
 
 minetest.register_on_joinplayer(function(player)
-	minetest.chat_send_all("Commands:  /spawn axis,  /mode 45,  /mode spinX,  /mode spinY,  /mode spinZ,  /rotation x y z,  /help")
+	minetest.chat_send_all("Commands:  /spawn axis,  /spawn box  /mode 45,  /mode spinX,  /mode spinY,  /mode spinZ,  /rotation <x> <y> <z> (- do not work),  /setRotX <x>,  /setRotY <y>,  /setRotZ [z]  /help,  /attach ab,  /attach ba")
 end)
