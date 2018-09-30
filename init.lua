@@ -18,7 +18,7 @@ local Axis = {
 
 
 function Axis:on_activate(_, staticdata)
-  minetest.chat_send_all("Commands:  /spawn axis,  /spawn box  /mode 45,  /mode spinX,  /mode spinY,  /mode spinZ,  /rotation <x> <y> <z> (- do not work),  /setRotX <x>,  /setRotY <y>,  /setRotZ [z]  /help,  /attach ab,  /attach ba")
+  minetest.chat_send_all("Commands:  /spawn axis,  /spawn box  /mode 45,  /mode spinX,  /mode spinY,  /mode spinZ,  /rotation <x> <y> <z> (negative does not work due to my lua code, sorry, use setRot),  /setRotX <x>,  /setRotY <y>,  /setRotZ [z]  /help,  /attach ab,  /attach ba")
 end
 
 
@@ -31,22 +31,22 @@ rotZ = 0
 
 function Axis:on_step(_, dtime)  
   
-  self.c = self.c - 1
+  self.c = self.c - (1/10)
   
   if mode == "45" then
-    if self.c >= 50 and self.c <= 100 then
-      rotX = 45
+    if self.c >= 50/10 and self.c <= 100/10 then
+      rotX = 4/math.pi
       rotY = 0
       rotZ = 0
-    elseif self.c >= 100 and self.c <= 150 then
+    elseif self.c >= 100/10 and self.c <= 150/10 then
       rotX = 0
-      rotY = 45
+      rotY = 4/math.pi
       rotZ = 0
-    elseif self.c >= 150 and self.c <= 200 then
+    elseif self.c >= 150/10 and self.c <= 200/10 then
       rotX = 0
       rotY = 0
-      rotZ = 45
-    elseif self.c >= 200 then
+      rotZ = 4/math.pi
+    elseif self.c >= 200/10 then
       self.c = 0
       rotX = 0
       rotY = 0
@@ -74,7 +74,7 @@ function Axis:on_step(_, dtime)
   minetest.chat_send_all( "Rot X: " .. tostring(self.object:get_rotation().x) .. "   " ..
                           "Rot Y: " .. tostring(self.object:get_rotation().y) .. "   " ..
                           "Rot Z: " .. tostring(self.object:get_rotation().z) .. "       " ..
-                          "Commands:  /spawn axis,  /spawn box  /mode 45,  /mode spinX,  /mode spinY,  /mode spinZ,  /rotation <x> <y> <z> (- do not work),  /setRotX <x>,  /setRotY <y>,  /setRotZ [z]  /help,  /attach ab,  /attach ba")
+                          "Commands:  /spawn axis,  /spawn box  /mode 45,  /mode spinX,  /mode spinY,  /mode spinZ,  /rotation <x> <y> <z> (negative does not work due to my lua code, sorry, use setRot),  /setRotX <x>,  /setRotY <y>,  /setRotZ [z]  /help,  /attach ab,  /attach ba")
 end
 
 
@@ -98,7 +98,7 @@ local Box = {
 
 
 function Box:on_step(_, dtime) 
-  self.s = self.s + 1
+  self.s = self.s + 0.1
   self.object:set_rotation({x=0, y=self.s, z=0})
 end
 
@@ -209,10 +209,10 @@ minetest.register_chatcommand("help", {
 	params = "<text>",
 	description = "",
 	func = function(name , text)
-    minetest.chat_send_all("Commands:  /spawn axis,  /spawn box  /mode 45,  /mode spinX,  /mode spinY,  /mode spinZ,  /rotation <x> <y> <z> (- do not work),  /setRotX <x>,  /setRotY <y>,  /setRotZ [z]  /help,  /attach ab,  /attach ba")
+    minetest.chat_send_all("Commands:  /spawn axis,  /spawn box  /mode 45,  /mode spinX,  /mode spinY,  /mode spinZ,  /rotation <x> <y> <z> (negative does not work due to my lua code, sorry, use setRot),  /setRotX <x>,  /setRotY <y>,  /setRotZ [z]  /help,  /attach ab,  /attach ba")
 	end,
 })
 
 minetest.register_on_joinplayer(function(player)
-	minetest.chat_send_all("Commands:  /spawn axis,  /spawn box  /mode 45,  /mode spinX,  /mode spinY,  /mode spinZ,  /rotation <x> <y> <z> (- do not work),  /setRotX <x>,  /setRotY <y>,  /setRotZ [z]  /help,  /attach ab,  /attach ba")
+	minetest.chat_send_all("Commands:  /spawn axis,  /spawn box  /mode 45,  /mode spinX,  /mode spinY,  /mode spinZ,  /rotation <x> <y> <z> (negative does not work due to my lua code, sorry, use setRot),  /setRotX <x>,  /setRotY <y>,  /setRotZ [z]  /help,  /attach ab,  /attach ba")
 end)
